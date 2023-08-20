@@ -1,5 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
-using MoqToNsubstitute.Utilities;
+using MoqToNSubstitute.Utilities;
 
 [assembly: InternalsVisibleTo("MoqToNSubstitute.Tests")]
 

@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics;
-using MoqToNsubstitute.Utilities;
+using MoqToNSubstitute.Utilities;
 
 namespace MoqToNSubstitute;
 

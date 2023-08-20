@@ -1,9 +1,11 @@
 ﻿using System.Text.RegularExpressions;
+using System.Xml.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Formatting;
-using MoqToNsubstitute.Utilities;
+using MoqToNSubstitute.Enums;
+using MoqToNSubstitute.Utilities;
 
 namespace MoqToNSubstitute;
 
@@ -53,9 +55,8 @@ internal class MoqToNSubstituteTransformer : ICodeTransformer
         foreach (var node in assignmentExpressionSyntaxArray)
         {
             var originalCode = node.ToString();
-            var transformedCode = originalCode.Replace("new Mock", "Substitute.For");
-
-            Logger.Log($"File: {sourceFilePath}, Line: {node.GetLocation().GetLineSpan().StartLinePosition.Line}, Original: {originalCode}, Transformed: {transformedCode}");
+            var transformedCode = ReplaceArgument(originalCode, NSubstituteArguments.Assignment);
+            Logger.Log($"Line: {node.GetLocation().GetLineSpan().StartLinePosition.Line}, Original: {originalCode}, Transformed: {transformedCode}");
         }
 
         var argumentSyntaxCollection = root.GetNodes<ArgumentSyntax>(".Object");
@@ -64,9 +65,8 @@ internal class MoqToNSubstituteTransformer : ICodeTransformer
         foreach (var node in argumentSyntaxArray)
         {
             var originalCode = node.ToString();
-            var transformedCode = originalCode.Replace(".Object", "");
-
-            Logger.Log($"File: {sourceFilePath}, Line: {node.GetLocation().GetLineSpan().StartLinePosition.Line}, Original: {originalCode}, Transformed: {transformedCode}");
+            var transformedCode = ReplaceArgument(originalCode, NSubstituteArguments.Object);
+            Logger.Log($"Line: {node.GetLocation().GetLineSpan().StartLinePosition.Line}, Original: {originalCode}, Transformed: {transformedCode}");
         }
 
         var fieldDeclarationSyntaxCollection = root.GetNodes<FieldDeclarationSyntax>("Mock<");
@@ -74,9 +74,8 @@ internal class MoqToNSubstituteTransformer : ICodeTransformer
         foreach (var node in fieldDeclarationSyntaxArray)
         {
             var originalCode = node.ToString();
-            var transformedCode = Regex.Replace(originalCode, "Mock\\<(?<start>.+)\\>", "${start}");
-                
-            Logger.Log($"File: {sourceFilePath}, Line: {node.GetLocation().GetLineSpan().StartLinePosition.Line}, Original: {originalCode}, Transformed: {transformedCode}");
+            var transformedCode = ReplaceArgument(originalCode, NSubstituteArguments.Fields);                
+            Logger.Log($"Line: {node.GetLocation().GetLineSpan().StartLinePosition.Line}, Original: {originalCode}, Transformed: {transformedCode}");
         }
 
         var expressionStatementSyntaxCollection = root.GetNodes<ExpressionStatementSyntax>(".Setup(");
@@ -85,19 +84,8 @@ internal class MoqToNSubstituteTransformer : ICodeTransformer
         foreach (var node in expressionStatementSyntaxArray)
         {
             var originalCode = node.ToString();
-            // remove the carriage returns from the expression
-            var transformedCode = Regex.Replace(originalCode, "\r\n *", "");
-            transformedCode = transformedCode.Replace("It.IsAny", "Arg.Any");
-            transformedCode = transformedCode.Replace("It.Is", "Arg.Is");
-            transformedCode = transformedCode.Replace(".Verifiable()", "");
-            transformedCode = Regex.Replace(transformedCode, "(?<start>.+)\\.Setup\\(.+ => [^.]+\\.(?<middle>.+)\\)\\.ReturnsAsync(?<end>.+)", "${start}.${middle}.Returns${end}");
-            transformedCode = Regex.Replace(transformedCode, "(?<start>.+)\\.Setup\\(.+ => [^.]+\\.(?<middle>.+)\\)\\.Returns(?<end>.+)", "${start}.${middle}.Returns${end}");
-
-            transformedCode = Regex.Replace(transformedCode, "(?<start>.+)\\.Setup\\(.+ => [^.]+\\.(?<middle>.+)\\)\\.ThrowsAsync(?<end>.+)", "${start}.${middle}.Throws${end}");
-            transformedCode = Regex.Replace(transformedCode, "(?<start>.+)\\.Setup\\(.+ => [^.]+\\.(?<middle>.+)\\)\\.Throws(?<end>.+)", "${start}.${middle}.Throws${end}");
-            transformedCode = Regex.Replace(transformedCode, "(?<start>.+)\\.Setup\\(.+ => [^.]+\\.(?<middle>.+)\\)(?<end>.+)", "${start}.${middle}.Throws${end}");
-
-            Logger.Log($"File: {sourceFilePath}, Line: {node.GetLocation().GetLineSpan().StartLinePosition.Line}, Original: {originalCode}, Transformed: {transformedCode}");
+            var transformedCode = ReplaceArgument(originalCode, NSubstituteArguments.Setup);
+            Logger.Log($"Line: {node.GetLocation().GetLineSpan().StartLinePosition.Line}, Original: {originalCode}, Transformed: {transformedCode}");
         }
 
         expressionStatementSyntaxCollection = root.GetNodes<ExpressionStatementSyntax>(".Verify(");
@@ -106,16 +94,9 @@ internal class MoqToNSubstituteTransformer : ICodeTransformer
         foreach (var node in expressionStatementSyntaxArray)
         {
             var originalCode = node.ToString();
-            // remove the carriage returns from the expression
-            var transformedCode = Regex.Replace(originalCode, "\r\n *", "");
-            transformedCode = transformedCode.Replace("It.IsAny", "Arg.Any");
-            transformedCode = transformedCode.Replace("It.Is", "Arg.Is");
-            transformedCode = Regex.Replace(transformedCode, "(?<start>.+)\\.Verify\\(.+ => [^.]+\\.(?<middle>.+)\\, Times.Once\\)(?<end>.+)", "${start}.Received(1).${middle}${end}");
-            transformedCode = Regex.Replace(transformedCode, "(?<start>.+)\\.Verify\\(.+ => [^.]+\\.(?<middle>.+)\\, Times.Never\\)(?<end>.+)", "${start}..DidNotReceive().${middle}${end}");
-            transformedCode = Regex.Replace(transformedCode, "(?<start>.+)\\.Verify\\(.+ => [^.]+\\.(?<middle>.+)\\, Times.Exactly((?<times>.+))\\)(?<end>.+)", "${start}.Received(${times}).${middle}${end}");
-            transformedCode = Regex.Replace(transformedCode, "(?<start>.+)\\.Verify\\(.+ => [^.]+\\.(?<middle>.+)(?<end>.+)", "${start}.Received().${middle}${end}");
+            var transformedCode = ReplaceArgument(originalCode, NSubstituteArguments.Verify);
 
-            Logger.Log($"File: {sourceFilePath}, Line: {node.GetLocation().GetLineSpan().StartLinePosition.Line}, Original: {originalCode}, Transformed: {transformedCode}");
+            Logger.Log($"Line: {node.GetLocation().GetLineSpan().StartLinePosition.Line}, Original: {originalCode}, Transformed: {transformedCode}");
         }
     }
 
@@ -139,6 +120,42 @@ internal class MoqToNSubstituteTransformer : ICodeTransformer
             var nodeType = node.GetType().ToString();
 
             Logger.Log($"Line: {node.GetLocation().GetLineSpan().StartLinePosition.Line}, Original: {originalCode}, Node Type: {nodeType}");
+        }
+    }
+
+    internal static string ReplaceArgument(string originalCode, Enum argumentType)
+    {
+        string transformedCode;
+        switch (argumentType)
+        {
+            case NSubstituteArguments.Object:
+                return originalCode.Replace(".Object", "");
+            case NSubstituteArguments.Assignment:
+                return originalCode.Replace("new Mock", "Substitute.For");
+            case NSubstituteArguments.Fields:
+                return Regex.Replace(originalCode, "Mock\\<(?<start>.+)\\>", "${start}");
+            case NSubstituteArguments.Setup:
+                // remove the carriage returns from the expression
+                transformedCode = Regex.Replace(originalCode, "\r\n *", "")
+                    .Replace("It.IsAny", "Arg.Any")
+                    .Replace("It.Is", "Arg.Is")
+                    .Replace(".Verifiable()", "");
+                transformedCode = Regex.Replace(transformedCode, "(?<start>.+)\\.Setup\\(.+ => [^.]+\\.(?<middle>.+)\\)\\.ReturnsAsync(?<end>.+)", "${start}.${middle}.Returns${end}");
+                transformedCode = Regex.Replace(transformedCode, "(?<start>.+)\\.Setup\\(.+ => [^.]+\\.(?<middle>.+)\\)\\.Returns(?<end>.+)", "${start}.${middle}.Returns${end}");
+                transformedCode = Regex.Replace(transformedCode, "(?<start>.+)\\.Setup\\(.+ => [^.]+\\.(?<middle>.+)\\)\\.ThrowsAsync(?<end>.+)", "${start}.${middle}.Throws${end}");
+                transformedCode = Regex.Replace(transformedCode, "(?<start>.+)\\.Setup\\(.+ => [^.]+\\.(?<middle>.+)\\)\\.Throws(?<end>.+)", "${start}.${middle}.Throws${end}");
+                return Regex.Replace(transformedCode, "(?<start>.+)\\.Setup\\(.+ => [^.]+\\.(?<middle>.+)\\)(?<end>.+)", "${start}.${middle}.Throws${end}");
+            case NSubstituteArguments.Verify:
+                // remove the carriage returns from the expression
+                transformedCode = Regex.Replace(originalCode, "\r\n *", "")
+                    .Replace("It.IsAny", "Arg.Any")
+                    .Replace("It.Is", "Arg.Is");
+                transformedCode = Regex.Replace(transformedCode, "(?<start>.+)\\.Verify\\(.+ => [^.]+\\.(?<middle>.+)\\, Times.Once\\)(?<end>.+)", "${start}.Received(1).${middle}${end}");
+                transformedCode = Regex.Replace(transformedCode, "(?<start>.+)\\.Verify\\(.+ => [^.]+\\.(?<middle>.+)\\, Times.Never\\)(?<end>.+)", "${start}..DidNotReceive().${middle}${end}");
+                transformedCode = Regex.Replace(transformedCode, "(?<start>.+)\\.Verify\\(.+ => [^.]+\\.(?<middle>.+)\\, Times.Exactly((?<times>.+))\\)(?<end>.+)", "${start}.Received(${times}).${middle}${end}");
+                return Regex.Replace(transformedCode, "(?<start>.+)\\.Verify\\(.+ => [^.]+\\.(?<middle>.+)(?<end>.+)", "${start}.Received().${middle}${end}");
+            default:
+                throw new ArgumentOutOfRangeException(nameof(argumentType));
         }
     }
 }

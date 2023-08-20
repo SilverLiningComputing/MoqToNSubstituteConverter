@@ -1,4 +1,4 @@
-﻿namespace MoqToNsubstitute.Utilities;
+﻿namespace MoqToNSubstitute.Utilities;
 
 public static class Logger
 {
