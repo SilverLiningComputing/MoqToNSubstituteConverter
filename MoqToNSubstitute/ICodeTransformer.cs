@@ -1,7 +1,6 @@
 ﻿namespace MoqToNSubstitute;
 internal interface ICodeTransformer
 {
-    void Transform(string sourceFilePath);
-    void Analyze(string sourceFilePath);
+    void Transform(string sourceFilePath, bool analysisOnly = true);
     void ShowNodes(string sourceFilePath);
 }

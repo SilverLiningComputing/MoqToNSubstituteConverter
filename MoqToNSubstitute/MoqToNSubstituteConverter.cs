@@ -36,8 +36,7 @@ internal static class MoqToNSubstituteConverter
         foreach (var sourceFile in csFiles)
         {
             Logger.Log(analysisOnly ? $"Analyzing {sourceFile}" : $"Transforming {sourceFile}");
-            if (analysisOnly) CodeTransformer.Analyze(sourceFile);
-            else CodeTransformer.Transform(sourceFile);
+            CodeTransformer.Transform(sourceFile, analysisOnly);
         }
         Logger.Log(analysisOnly ? "Completed analysis" : "Completed transformations.");
     }
