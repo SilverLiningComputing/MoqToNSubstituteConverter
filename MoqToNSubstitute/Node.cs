@@ -34,13 +34,13 @@ internal static class Node
         );
     }
 
-    internal static SyntaxNode ReplaceExpressionNodes(this SyntaxNode root, string matchText)
+    internal static SyntaxNode ReplaceExpressionNodes(this SyntaxNode root, string matchText, Enum nSubstituteArguments)
     {
         return root.ReplaceNodes(root.GetNodes<ExpressionStatementSyntax>(matchText),
             (node, _) =>
             {
                 var originalCode = node.ToString();
-                var transformedCode = ReplaceArgument(originalCode, NSubstituteArguments.Setup);
+                var transformedCode = ReplaceArgument(originalCode, nSubstituteArguments);
 
                 Logger.Log($"Line: {node.GetLocation().GetLineSpan().StartLinePosition.Line}, Original: {originalCode}, Transformed: {transformedCode}");
 
@@ -110,7 +110,7 @@ internal static class Node
                     .Replace("It.Is", "Arg.Is");
                 transformedCode = Regex.Replace(transformedCode, "(?<start>.+)\\.Verify\\(.+ => [^.]+\\.(?<middle>.+)\\, Times.Once\\);", "${start}.Received(1).${middle}");
                 transformedCode = Regex.Replace(transformedCode, "(?<start>.+)\\.Verify\\(.+ => [^.]+\\.(?<middle>.+)\\, Times.Never\\);", "${start}..DidNotReceive().${middle}");
-                transformedCode = Regex.Replace(transformedCode, "(?<start>.+)\\.Verify\\(.+ => [^.]+\\.(?<middle>.+)\\, Times.Exactly((?<times>.+))\\);", "${start}.Received(${times}).${middle}");
+                transformedCode = Regex.Replace(transformedCode, "(?<start>.+)\\.Verify\\(.+ => [^.]+\\.(?<middle>.+)\\, Times.Exactly(?<times>.+)\\);", "${start}.Received${times}.${middle}");
                 return Regex.Replace(transformedCode, "(?<start>.+)\\.Verify\\(.+ => [^.]+\\.(?<middle>.+);", "${start}.Received().${middle}");
             default:
                 throw new ArgumentOutOfRangeException(nameof(argumentType));

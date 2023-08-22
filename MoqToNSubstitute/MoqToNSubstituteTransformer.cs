@@ -1,4 +1,5 @@
 ﻿using Microsoft.CodeAnalysis.CSharp;
+using MoqToNSubstitute.Enums;
 using MoqToNSubstitute.Utilities;
 
 namespace MoqToNSubstitute;
@@ -9,7 +10,7 @@ internal class MoqToNSubstituteTransformer : ICodeTransformer
     {
         var sourceText = File.ReadAllText(sourceFilePath);
 
-        if (!sourceText.Contains("Moq")) return;
+        if (!sourceText.Contains("Mock")) return;
 
         var tree = CSharpSyntaxTree.ParseText(sourceText);
         var root = tree.GetRoot();
@@ -17,8 +18,8 @@ internal class MoqToNSubstituteTransformer : ICodeTransformer
         var rootAssignment = root.ReplaceAssignmentNodes("Mock");
         var rootObject = rootAssignment.ReplaceArgumentNodes(".Object");
         var rootFields = rootObject.ReplaceVariableNodes("Mock<");
-        var rootSetup = rootFields.ReplaceExpressionNodes(".Setup(");
-        var rootVerify = rootSetup.ReplaceExpressionNodes(".Verify(");
+        var rootSetup = rootFields.ReplaceExpressionNodes(".Setup(", NSubstituteArguments.Setup);
+        var rootVerify = rootSetup.ReplaceExpressionNodes(".Verify(", NSubstituteArguments.Verify);
 
         Logger.Log($"Modified File: \r\n{rootVerify}\r\n");
         if (root.ToFullString() == rootVerify.ToFullString() || analysisOnly) return;
