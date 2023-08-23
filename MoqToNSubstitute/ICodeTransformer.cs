@@ -2,5 +2,4 @@
 internal interface ICodeTransformer
 {
     void Transform(string sourceFilePath, bool analysisOnly = true);
-    void ShowNodes(string sourceFilePath);
 }

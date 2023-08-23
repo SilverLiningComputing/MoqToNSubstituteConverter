@@ -1,6 +1,9 @@
 ﻿using Microsoft.CodeAnalysis.CSharp;
 using MoqToNSubstitute.Enums;
 using MoqToNSubstitute.Utilities;
+using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("MoqToNSubstitute.Tests")]
 
 namespace MoqToNSubstitute;
 
@@ -16,7 +19,8 @@ internal class MoqToNSubstituteTransformer : ICodeTransformer
         var root = tree.GetRoot();
 
         var rootAssignment = root.ReplaceAssignmentNodes("Mock");
-        var rootObject = rootAssignment.ReplaceArgumentNodes(".Object");
+        var rootNewObject = rootAssignment.ReplaceObjectCreationNodes("new Mock");
+        var rootObject = rootNewObject.ReplaceArgumentNodes(".Object");
         var rootFields = rootObject.ReplaceVariableNodes("Mock<");
         var rootSetup = rootFields.ReplaceExpressionNodes(".Setup(", NSubstituteArguments.Setup);
         var rootVerify = rootSetup.ReplaceExpressionNodes(".Verify(", NSubstituteArguments.Verify);
@@ -27,19 +31,20 @@ internal class MoqToNSubstituteTransformer : ICodeTransformer
         File.WriteAllText(sourceFilePath, modifiedCode);
     }
 
-    public void ShowNodes(string sourceFilePath)
+    public void GetNodeTypesFromFile(string sourceFilePath)
     {
         var sourceText = File.ReadAllText(sourceFilePath);
+        if (!sourceText.Contains("Mock")) return;
+        GetNodeTypesFromString(sourceText);
+    }
 
-        if (!sourceText.Contains("Moq")) return;
-
+    internal static void GetNodeTypesFromString(string sourceText)
+    {
         var tree = CSharpSyntaxTree.ParseText(sourceText);
         var root = tree.GetRoot();
 
         var descendantNodes = root.DescendantNodes();
         var descendantNodeArray = descendantNodes.ToArray();
-
-        Logger.Log($"File: {sourceFilePath}");
 
         foreach (var node in descendantNodeArray)
         {

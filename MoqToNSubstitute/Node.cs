@@ -26,10 +26,23 @@ internal static class Node
                 var nodeRight = node.Right.ToString();
                 var nodeRightTransformed = ReplaceArgument(nodeRight, NSubstituteArguments.Assignment);
 
-                var updatedNode = node.Update(SyntaxFactory.ParseExpression($"{nodeLeftTransformed} "), node.OperatorToken, SyntaxFactory.ParseExpression(nodeRightTransformed));
+                var updatedNode = node.Update(SyntaxFactory.ParseExpression($"{nodeLeftTransformed} "), node.OperatorToken, SyntaxFactory.ParseExpression($"{nodeRightTransformed}"));
                 Logger.Log($"Line: {node.GetLocation().GetLineSpan().StartLinePosition.Line}, Original: {originalCode}, Transformed: {updatedNode}");
 
                 return updatedNode;
+            }
+        );
+    }
+
+    internal static SyntaxNode ReplaceObjectCreationNodes(this SyntaxNode root, string matchText)
+    {
+        var rewriter = new MockToSubstituteRewriter();
+        return root.ReplaceNodes(root.GetNodes<ObjectCreationExpressionSyntax>(matchText),
+            (node, _) =>
+            {
+                var newNode = rewriter.VisitObjectCreationExpression(node);
+                Logger.Log($"Line: {node.GetLocation().GetLineSpan().StartLinePosition.Line}, Original: {node}, Transformed: {newNode}");
+                return newNode;
             }
         );
     }
@@ -59,10 +72,9 @@ internal static class Node
 
                 Logger.Log($"Line: {node.GetLocation().GetLineSpan().StartLinePosition.Line}, Original Type: {originalType}, Transformed: {transformedCode}");
 
-                return node.Update(SyntaxFactory.ParseTypeName(transformedCode), node.Variables);
-            }
+                return node.Update(SyntaxFactory.ParseTypeName($"{transformedCode} "), node.Variables);
+            } 
         );
-
     }
 
     internal static SyntaxNode ReplaceArgumentNodes(this SyntaxNode root, string matchText)
@@ -91,13 +103,14 @@ internal static class Node
             case NSubstituteArguments.Assignment:
                 return originalCode.Replace("new Mock", "Substitute.For");
             case NSubstituteArguments.Fields:
-                return Regex.Replace(originalCode, "Mock\\<(?<start>.+)\\>", "${start} ");
+                return Regex.Replace(originalCode, "Mock\\<(?<start>.+)\\>", "${start}");
             case NSubstituteArguments.Setup:
                 // remove the carriage returns from the expression
                 transformedCode = Regex.Replace(originalCode, "\r\n *", "")
                     .Replace("It.IsAny", "Arg.Any")
                     .Replace("It.Is", "Arg.Is")
-                    .Replace(".Verifiable()", "");
+                    .Replace(".Verifiable()", "")
+                    .Replace(".Result", "");
                 transformedCode = Regex.Replace(transformedCode, "(?<start>.+)\\.Setup\\(.+ => [^.]+\\.(?<middle>.+)\\)\\.ReturnsAsync(?<end>.+);", "${start}.${middle}.Returns${end}");
                 transformedCode = Regex.Replace(transformedCode, "(?<start>.+)\\.Setup\\(.+ => [^.]+\\.(?<middle>.+)\\)\\.Returns(?<end>.+);", "${start}.${middle}.Returns${end}");
                 transformedCode = Regex.Replace(transformedCode, "(?<start>.+)\\.Setup\\(.+ => [^.]+\\.(?<middle>.+)\\)\\.ThrowsAsync(?<end>.+);", "${start}.${middle}.Throws${end}");

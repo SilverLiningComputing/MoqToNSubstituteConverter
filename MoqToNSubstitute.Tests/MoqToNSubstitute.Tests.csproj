@@ -9,6 +9,26 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Resources\Moq\AssignmentSample.cs" />
+    <Compile Remove="Resources\Moq\FieldWithAssignment.cs" />
+    <Compile Remove="Resources\Moq\VariableSample.cs" />
+    <Compile Remove="Resources\NSubstitute\AssignmentSampleReplaced.cs" />
+    <Compile Remove="Resources\NSubstitute\FieldWithAssignmentReplaced.cs" />
+    <Compile Remove="Resources\NSubstitute\VariableSampleReplaced.cs" />
+    <Compile Remove="Resources\TaxServiceTests.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Moq\AssignmentSample.cs" />
+    <EmbeddedResource Include="Resources\Moq\FieldWithAssignment.cs" />
+    <EmbeddedResource Include="Resources\Moq\VariableSample.cs" />
+    <EmbeddedResource Include="Resources\NSubstitute\AssignmentSampleReplaced.cs" />
+    <EmbeddedResource Include="Resources\NSubstitute\FieldWithAssignmentReplaced.cs" />
+    <EmbeddedResource Include="Resources\NSubstitute\VariableSampleReplaced.cs" />
+    <EmbeddedResource Include="Resources\TaxServiceTests.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="2.2.8" />
     <PackageReference Include="MSTest.TestFramework" Version="2.2.8" />
