@@ -1,10 +1,9 @@
 ﻿using System.Diagnostics;
-using MoqToNSubstitute.Utilities;
 
-namespace MoqToNSubstitute;
+namespace MoqToNSubstitute.Utilities;
 
 internal class DotNetPackageManager : IPackageManager
-{ 
+{
     public void Uninstall(string projectPath, string packageName)
     {
         RunCommand($"dotnet remove {projectPath} package {packageName}");

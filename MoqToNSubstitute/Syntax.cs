@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 namespace MoqToNSubstitute;
 
-internal static class Node
+internal static class Syntax
 {
     internal static IEnumerable<T> GetNodes<T>(this SyntaxNode root, string matchText)
     {
@@ -36,13 +36,13 @@ internal static class Node
 
     internal static SyntaxNode ReplaceObjectCreationNodes(this SyntaxNode root, string matchText)
     {
-        var rewriter = new MockToSubstituteRewriter();
+        var rewriter = new CustomSyntaxRewriter("Mock", "Substitute.For");
         return root.ReplaceNodes(root.GetNodes<ObjectCreationExpressionSyntax>(matchText),
             (node, _) =>
             {
                 var newNode = rewriter.VisitObjectCreationExpression(node);
                 Logger.Log($"Line: {node.GetLocation().GetLineSpan().StartLinePosition.Line}, Original: {node}, Transformed: {newNode}");
-                return newNode;
+                return newNode ?? node;
             }
         );
     }
@@ -90,7 +90,6 @@ internal static class Node
                 return node.WithExpression(SyntaxFactory.ParseExpression(transformedCode));
             }
         );
-
     }
 
     internal static string ReplaceArgument(string originalCode, Enum argumentType)

@@ -10,20 +10,20 @@
 
   <ItemGroup>
     <Compile Remove="Resources\Moq\AssignmentSample.cs" />
-    <Compile Remove="Resources\Moq\FieldWithAssignment.cs" />
+    <Compile Remove="Resources\Moq\FieldsWithAssignment.cs" />
     <Compile Remove="Resources\Moq\VariableSample.cs" />
     <Compile Remove="Resources\NSubstitute\AssignmentSampleReplaced.cs" />
-    <Compile Remove="Resources\NSubstitute\FieldWithAssignmentReplaced.cs" />
+    <Compile Remove="Resources\NSubstitute\FieldsWithAssignmentReplaced.cs" />
     <Compile Remove="Resources\NSubstitute\VariableSampleReplaced.cs" />
     <Compile Remove="Resources\TaxServiceTests.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Resources\Moq\AssignmentSample.cs" />
-    <EmbeddedResource Include="Resources\Moq\FieldWithAssignment.cs" />
+    <EmbeddedResource Include="Resources\Moq\FieldsWithAssignment.cs" />
     <EmbeddedResource Include="Resources\Moq\VariableSample.cs" />
     <EmbeddedResource Include="Resources\NSubstitute\AssignmentSampleReplaced.cs" />
-    <EmbeddedResource Include="Resources\NSubstitute\FieldWithAssignmentReplaced.cs" />
+    <EmbeddedResource Include="Resources\NSubstitute\FieldsWithAssignmentReplaced.cs" />
     <EmbeddedResource Include="Resources\NSubstitute\VariableSampleReplaced.cs" />
     <EmbeddedResource Include="Resources\TaxServiceTests.cs" />
   </ItemGroup>

@@ -1,4 +1,4 @@
-﻿namespace MoqToNSubstitute;
+﻿namespace MoqToNSubstitute.Utilities;
 internal interface IPackageManager
 {
     void Uninstall(string projectPath, string packageName);
