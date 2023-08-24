@@ -28,6 +28,11 @@ namespace MoqToNSubstitute.Tests
                 {
                     Text = "Mock\\<(?<start>.+)\\>",
                     IsRegex = true
+                },
+                AssignmentExpression = new Expression
+                {
+                    Text = "new Mock",
+                    IsRegex = false
                 }
             };
             _replacement = new CodeSyntax
@@ -38,6 +43,11 @@ namespace MoqToNSubstitute.Tests
                 {
                     Text = "${start}",
                     IsRegex = true
+                },
+                AssignmentExpression = new Expression
+                {
+                    Text = "Substitute.For",
+                    IsRegex = false
                 }
             };
             _customSyntaxRewriter = new CustomSyntaxRewriter(_original, _replacement);
@@ -90,6 +100,22 @@ namespace MoqToNSubstitute.Tests
             var replacementNode = _customSyntaxRewriter.VisitVariableDeclaration(testNode);
             Assert.IsNotNull(replacementNode);
             Assert.AreEqual("ITestClass testClass = new()", replacementNode.ToString());
+        }
+
+        [TestMethod]
+        public void Test_VisitAssignmentExpression()
+        {
+            Assert.IsNotNull(_original);
+            Assert.IsNotNull(_customSyntaxRewriter);
+            const string node = "_testClass = new Mock<ITextClass>(_mockClass.Object, _realClass);";
+            var tree = CSharpSyntaxTree.ParseText(node);
+            var root = tree.GetRoot();
+            var testNode = root.GetNodes<AssignmentExpressionSyntax>(_original.Identifier).FirstOrDefault();
+            Assert.IsNotNull(testNode);
+            Assert.AreEqual("_testClass = new Mock<ITextClass>(_mockClass.Object, _realClass)", testNode.ToString());
+            var replacementNode = _customSyntaxRewriter.VisitAssignmentExpression(testNode);
+            Assert.IsNotNull(replacementNode);
+            Assert.AreEqual("_testClass = Substitute.For<ITextClass>", replacementNode.ToString());
         }
     }
 }

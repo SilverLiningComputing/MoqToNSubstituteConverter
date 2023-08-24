@@ -4,8 +4,8 @@
     {
         public string Identifier { get; set; } = "";
         public string Argument { get; set; } = "";
-        public Expression VariableType { get; set; } = new Expression();
-        public string AssignmentExpression { get; set; } = "";
-        public string ExpressionStatement { get; set; } = "";
+        public Expression VariableType { get; set; } = new();
+        public Expression AssignmentExpression { get; set; } = new();
+        public IEnumerable<Expression> ExpressionStatement { get; set; }
     }
 }
