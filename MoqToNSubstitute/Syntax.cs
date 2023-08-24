@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using MoqToNSubstitute.Enums;
 using MoqToNSubstitute.Utilities;
 using System.Text.RegularExpressions;
+using MoqToNSubstitute.Models;
 
 namespace MoqToNSubstitute;
 
@@ -36,7 +37,7 @@ internal static class Syntax
 
     internal static SyntaxNode ReplaceObjectCreationNodes(this SyntaxNode root, string matchText)
     {
-        var rewriter = new CustomSyntaxRewriter("Mock", "Substitute.For");
+        var rewriter = new CustomSyntaxRewriter(new CodeSyntax { Identifier = "Mock" }, new CodeSyntax { Identifier = "Substitute.For" });
         return root.ReplaceNodes(root.GetNodes<ObjectCreationExpressionSyntax>(matchText),
             (node, _) =>
             {
