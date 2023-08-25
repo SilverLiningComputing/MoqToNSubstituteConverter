@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using MoqToNSubstitute.Enums;
 using MoqToNSubstitute.Tests.Helpers;
 using System.Reflection;
 
@@ -84,6 +85,23 @@ namespace MoqToNSubstitute.Tests
             _fileContents = FileIO.ReadFileFromEmbeddedResources(resourceName);
             Assert.IsFalse(string.IsNullOrEmpty(_fileContents));
             Assert.AreEqual(_fileContents, rootNewObject.ToString());
+        }
+
+        [TestMethod]
+        public void Test_setup_and_verify()
+        {
+            Assert.IsNotNull(_assembly);
+            var resourceName = _assembly.GetManifestResourceNames().Single(n => n.EndsWith("SetupAndVerify.cs"));
+            _fileContents = FileIO.ReadFileFromEmbeddedResources(resourceName);
+            Assert.IsFalse(string.IsNullOrEmpty(_fileContents));
+            var tree = CSharpSyntaxTree.ParseText(_fileContents);
+            var root = tree.GetRoot();
+            var rootSetup = root.ReplaceExpressionNodes(".Setup(", NSubstituteArguments.Setup);
+            var rootVerify = rootSetup.ReplaceExpressionNodes(".Verify(", NSubstituteArguments.Verify);
+            resourceName = _assembly.GetManifestResourceNames().Single(n => n.EndsWith("SetupAndVerifyReplaced.cs"));
+            _fileContents = FileIO.ReadFileFromEmbeddedResources(resourceName);
+            Assert.IsFalse(string.IsNullOrEmpty(_fileContents));
+            Assert.AreEqual(_fileContents, rootVerify.ToString());
         }
     }
 }

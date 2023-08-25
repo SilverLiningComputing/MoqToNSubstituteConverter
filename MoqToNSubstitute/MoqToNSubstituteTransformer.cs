@@ -2,6 +2,8 @@
 using MoqToNSubstitute.Enums;
 using MoqToNSubstitute.Utilities;
 using System.Runtime.CompilerServices;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Formatting;
 
 [assembly: InternalsVisibleTo("MoqToNSubstitute.Tests")]
 
@@ -27,7 +29,7 @@ internal class MoqToNSubstituteTransformer : ICodeTransformer
 
         Logger.Log($"Modified File: \r\n{rootVerify}\r\n");
         if (root.ToFullString() == rootVerify.ToFullString() || analysisOnly) return;
-        var modifiedCode = rootVerify.ToFullString();
+        var modifiedCode = Formatter.Format(rootVerify, new AdhocWorkspace()).ToFullString();
         File.WriteAllText(sourceFilePath, modifiedCode);
     }
 

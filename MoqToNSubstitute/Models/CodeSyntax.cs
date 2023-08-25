@@ -2,10 +2,10 @@
 {
     public class CodeSyntax
     {
-        public string Identifier { get; set; } = "";
-        public string Argument { get; set; } = "";
-        public Expression VariableType { get; set; } = new();
-        public Expression AssignmentExpression { get; set; } = new();
+        public Expression Identifier { get; set; }
+        public IEnumerable<Expression> Argument { get; set; }
+        public IEnumerable<Expression> VariableType { get; set; }
+        public Expression AssignmentExpression { get; set; }
         public IEnumerable<Expression> ExpressionStatement { get; set; }
     }
 }

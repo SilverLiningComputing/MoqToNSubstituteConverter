@@ -10,9 +10,12 @@ namespace MoqToNSubstitute;
 
 internal static class Syntax
 {
-    internal static IEnumerable<T> GetNodes<T>(this SyntaxNode root, string matchText)
+    internal static IEnumerable<T> GetNodes<T>(this SyntaxNode root, params string[] matchStrings)
     {
-        return root.DescendantNodes().OfType<T>().Where(node => node != null && node.ToString()!.Contains(matchText));
+        return root.DescendantNodes().OfType<T>().Where(node =>
+        {
+            return !(node == null || !matchStrings.Any(match => node.ToString()!.Contains(match)));
+        });
     }
 
     internal static SyntaxNode ReplaceAssignmentNodes(this SyntaxNode root, string matchText)
@@ -37,7 +40,7 @@ internal static class Syntax
 
     internal static SyntaxNode ReplaceObjectCreationNodes(this SyntaxNode root, string matchText)
     {
-        var rewriter = new CustomSyntaxRewriter(new CodeSyntax { Identifier = "Mock" }, new CodeSyntax { Identifier = "Substitute.For" });
+        var rewriter = new CustomSyntaxRewriter(new CodeSyntax { Identifier = new Expression("Mock", "Substitute.For", false) });
         return root.ReplaceNodes(root.GetNodes<ObjectCreationExpressionSyntax>(matchText),
             (node, _) =>
             {
@@ -122,9 +125,9 @@ internal static class Syntax
                     .Replace("It.IsAny", "Arg.Any")
                     .Replace("It.Is", "Arg.Is");
                 transformedCode = Regex.Replace(transformedCode, "(?<start>.+)\\.Verify\\(.+ => [^.]+\\.(?<middle>.+)\\, Times.Once\\);", "${start}.Received(1).${middle}");
-                transformedCode = Regex.Replace(transformedCode, "(?<start>.+)\\.Verify\\(.+ => [^.]+\\.(?<middle>.+)\\, Times.Never\\);", "${start}..DidNotReceive().${middle}");
+                transformedCode = Regex.Replace(transformedCode, "(?<start>.+)\\.Verify\\(.+ => [^.]+\\.(?<middle>.+)\\, Times.Never\\);", "${start}.DidNotReceive().${middle}");
                 transformedCode = Regex.Replace(transformedCode, "(?<start>.+)\\.Verify\\(.+ => [^.]+\\.(?<middle>.+)\\, Times.Exactly(?<times>.+)\\);", "${start}.Received${times}.${middle}");
-                return Regex.Replace(transformedCode, "(?<start>.+)\\.Verify\\(.+ => [^.]+\\.(?<middle>.+);", "${start}.Received().${middle}");
+                return Regex.Replace(transformedCode, "(?<start>.+)\\.Verify\\(.+ => [^.]+\\.(?<middle>.+)\\;", "${start}.Received().${middle}");
             default:
                 throw new ArgumentOutOfRangeException(nameof(argumentType));
         }

@@ -2,7 +2,15 @@
 {
     public class Expression
     {
-        public string Text { get; set; } = "";
-        public bool IsRegex { get; set; } = false;
+        public Expression(string original, string replacement, bool isRegex)
+        {
+            Original = original;
+            Replacement = replacement;
+            IsRegex = isRegex;
+        }
+
+        public string Original { get; set; }
+        public string Replacement { get; set; }
+        public bool IsRegex { get; set; }
     }
 }
