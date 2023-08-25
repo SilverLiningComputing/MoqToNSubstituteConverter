@@ -6,8 +6,8 @@
         [TestMethod]
         public void Test_Assignments()
         {
-_testClass = Substitute.For<ITestClass>();
-_testClass = Substitute.For<ITestClass>(_mockClass.Object, _realClass);
+            _testClass = Substitute.For<ITestClass>();
+            _testClass = Substitute.For<ITestClass>(_mockClass.Object, _realClass);
         }
     }
 }

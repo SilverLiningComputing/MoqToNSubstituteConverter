@@ -4,6 +4,8 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using MoqToNSubstitute.Models;
 using MoqToNSubstitute.Tests.Helpers;
 using System.Reflection;
+using MoqToNSubstitute.Extensions;
+using MoqToNSubstitute.Syntax;
 
 namespace MoqToNSubstitute.Tests
 {
@@ -134,7 +136,7 @@ namespace MoqToNSubstitute.Tests
             Assert.AreEqual("_classMock.Setup(x => x.Setup(It.IsAny<string>(), It.IsAny<int>())).Returns(0);", testNode.ToString());
             var replacementNode = _customSyntaxRewriter.VisitExpressionStatement(testNode);
             Assert.IsNotNull(replacementNode);
-            Assert.AreEqual("_classMock.Setup(Arg.Any<string>(), Arg.Any<int>()).Returns(0)", replacementNode.ToString());
+            Assert.AreEqual("_classMock.Setup(Arg.Any<string>(), Arg.Any<int>()).Returns(0);", replacementNode.ToString());
         }
     }
 }

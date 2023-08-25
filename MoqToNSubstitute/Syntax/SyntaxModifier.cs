@@ -4,20 +4,13 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using MoqToNSubstitute.Enums;
 using MoqToNSubstitute.Utilities;
 using System.Text.RegularExpressions;
+using MoqToNSubstitute.Extensions;
 using MoqToNSubstitute.Models;
 
-namespace MoqToNSubstitute;
+namespace MoqToNSubstitute.Syntax;
 
-internal static class Syntax
+internal static class SyntaxModifier
 {
-    internal static IEnumerable<T> GetNodes<T>(this SyntaxNode root, params string[] matchStrings)
-    {
-        return root.DescendantNodes().OfType<T>().Where(node =>
-        {
-            return !(node == null || !matchStrings.Any(match => node.ToString()!.Contains(match)));
-        });
-    }
-
     internal static SyntaxNode ReplaceAssignmentNodes(this SyntaxNode root, string matchText)
     {
         return root.ReplaceNodes(root.GetNodes<AssignmentExpressionSyntax>(matchText),
@@ -77,7 +70,7 @@ internal static class Syntax
                 Logger.Log($"Line: {node.GetLocation().GetLineSpan().StartLinePosition.Line}, Original Type: {originalType}, Transformed: {transformedCode}");
 
                 return node.Update(SyntaxFactory.ParseTypeName($"{transformedCode} "), node.Variables);
-            } 
+            }
         );
     }
 

@@ -3,11 +3,13 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using MoqToNSubstitute.Enums;
 using MoqToNSubstitute.Tests.Helpers;
 using System.Reflection;
+using MoqToNSubstitute.Extensions;
+using MoqToNSubstitute.Syntax;
 
 namespace MoqToNSubstitute.Tests
 {
     [TestClass]
-    public class SyntaxTests
+    public class SyntaxModifierTests
     {
         private static string? _fileContents;
         private static Assembly? _assembly;

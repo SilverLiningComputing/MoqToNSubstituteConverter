@@ -24,16 +24,16 @@ _classMock.Setup(Arg.Any<string>(), Arg.Any<int>()).Returns(0);
         [TestMethod]
         public void Test_verify()
         {
-_classMock.Received(1).Setup(Arg.Any<string>(), Arg.Any<int>());;
-_classMock.Received(2).Setup(Arg.Any<string>(), Arg.Any<int>());;
-_classMock.Received(1).Setup(Arg.Any<string>(), Arg.Any<int>());;
-_classMock.DidNotReceive().Setup(Arg.Any<string>(), Arg.Any<int>());;
-_classMock.Received(1).Setup(Arg.Any<string>(),Arg.Any<int>());;
-_classMock.Received(3).Setup(Arg.Any<string>(), Arg.Any<int>());;
-_classMock.Received(4).Setup(Arg.Any<string>(), Arg.Any<int>());;
-_classMock.Received(1).Setup();;
-_classMock.DidNotReceive().Setup(Arg.Any<string>(), Arg.Any<int>());;
-_classMock.Received(1).Setup(Arg.Any<string>(), Arg.Any<int>());;
+_classMock.Received(1).Setup(Arg.Any<string>(), Arg.Any<int>());
+_classMock.Received(2).Setup(Arg.Any<string>(), Arg.Any<int>());
+_classMock.Received(1).Setup(Arg.Any<string>(), Arg.Any<int>());
+_classMock.DidNotReceive().Setup(Arg.Any<string>(), Arg.Any<int>());
+_classMock.Received(1).Setup(Arg.Any<string>(),Arg.Any<int>());
+_classMock.Received(3).Setup(Arg.Any<string>(), Arg.Any<int>());
+_classMock.Received(4).Setup(Arg.Any<string>(), Arg.Any<int>());
+_classMock.Received(1).Setup();
+_classMock.DidNotReceive().Setup(Arg.Any<string>(), Arg.Any<int>());
+_classMock.Received(1).Setup(Arg.Any<string>(), Arg.Any<int>());
         }
     }
 }
