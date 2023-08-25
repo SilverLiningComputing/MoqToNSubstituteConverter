@@ -7,7 +7,7 @@ using System.Reflection;
 using MoqToNSubstitute.Extensions;
 using MoqToNSubstitute.Syntax;
 
-namespace MoqToNSubstitute.Tests
+namespace MoqToNSubstitute.Tests.Syntax
 {
     [TestClass]
     public class CustomSyntaxRewriterTests
@@ -94,8 +94,8 @@ namespace MoqToNSubstitute.Tests
         {
             Assert.IsNotNull(_substitutions);
             Assert.IsNotNull(_customSyntaxRewriter);
-            const string node = "Mock<ITestClass> testClass = new();"; 
-            var tree = CSharpSyntaxTree.ParseText(node); 
+            const string node = "Mock<ITestClass> testClass = new();";
+            var tree = CSharpSyntaxTree.ParseText(node);
             var root = tree.GetRoot();
             var testNode = root.GetNodes<VariableDeclarationSyntax>(_substitutions.Identifier.Original).FirstOrDefault();
             Assert.IsNotNull(testNode);

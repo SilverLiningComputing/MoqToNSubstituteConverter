@@ -1,7 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Formatting;
-using MoqToNSubstitute.Conversion;
 using MoqToNSubstitute.Models;
 using MoqToNSubstitute.Syntax;
 using MoqToNSubstitute.Utilities;
@@ -9,7 +8,7 @@ using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("MoqToNSubstitute.Tests")]
 
-namespace MoqToNSubstitute;
+namespace MoqToNSubstitute.Conversion;
 
 internal class MoqToNSubstituteTransformer : ICodeTransformer
 {
@@ -58,7 +57,7 @@ internal class MoqToNSubstituteTransformer : ICodeTransformer
         var rootNewObject = rootAssignment.ReplaceObjectCreationNodes(substitutions, "new Mock");
         var rootObject = rootNewObject.ReplaceArgumentNodes(substitutions, ".Object", "It.IsAny", "It.Is");
         var rootFields = rootObject.ReplaceVariableNodes(substitutions, "Mock<");
-        var rootExpression = rootFields.ReplaceExpressionNodes(substitutions, ".Setup(",".Verify(");
+        var rootExpression = rootFields.ReplaceExpressionNodes(substitutions, ".Setup(", ".Verify(");
 
         Logger.Log($"Modified File: \r\n{rootExpression}\r\n");
         if (root.ToFullString() == rootExpression.ToFullString() || analysisOnly) return;
