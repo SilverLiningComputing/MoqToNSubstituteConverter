@@ -17,11 +17,23 @@ namespace MoqToNSubstitute.Syntax
 
         public override SyntaxNode? VisitObjectCreationExpression(ObjectCreationExpressionSyntax node)
         {
-            // Check if the object creation expression is of type "new Identifier<T>()"
-            if (node.Type is not GenericNameSyntax genericName || genericName.Identifier.Text != _substitutions.Identifier.Original ||
-                genericName.TypeArgumentList.Arguments.Count != 1) return base.VisitObjectCreationExpression(node);
+            var originalType = node.Type.ToString();
+            var replacementCode = originalType;
+            foreach (var identifier in _substitutions.Identifier)
+            {
+                if (identifier.IsRegex)
+                {
+                    replacementCode = Regex.Replace(replacementCode, identifier.Original, identifier.Replacement);
+                }
+                else
+                {
+                    replacementCode = replacementCode.Replace(identifier.Original,
+                        identifier.Replacement);
+                }
+            }
+
             // Create a new "Replacement<T>(arguments)" expression
-            var substituteExpression = SyntaxFactory.ParseExpression($"{_substitutions.Identifier.Replacement}<{genericName.TypeArgumentList.Arguments[0]}>{node.ArgumentList}");
+            var substituteExpression = SyntaxFactory.ParseExpression($"{replacementCode}{node.ArgumentList}");
 
             // Return the node with the new expression
             return substituteExpression;
@@ -56,11 +68,20 @@ namespace MoqToNSubstitute.Syntax
         public override SyntaxNode? VisitAssignmentExpression(AssignmentExpressionSyntax node)
         {
             var originalAssignment = node.Right.ToString();
-            return node.Update(node.Left,
-                node.OperatorToken,
-                _substitutions.AssignmentExpression.IsRegex ?
-                    SyntaxFactory.ParseTypeName($"{Regex.Replace(originalAssignment, _substitutions.AssignmentExpression.Original, _substitutions.AssignmentExpression.Replacement)}") :
-                    SyntaxFactory.ParseTypeName($"{originalAssignment.Replace(_substitutions.AssignmentExpression.Original, _substitutions.AssignmentExpression.Replacement)}"));
+            var replacementCode = originalAssignment;
+            foreach (var assignment in _substitutions.AssignmentExpression)
+            {
+                if (assignment.IsRegex)
+                {
+                    replacementCode = Regex.Replace(replacementCode, assignment.Original, assignment.Replacement);
+                }
+                else
+                {
+                    replacementCode = replacementCode.Replace(assignment.Original,
+                        assignment.Replacement);
+                }
+            }
+            return node.Update(node.Left, node.OperatorToken, SyntaxFactory.ParseTypeName(replacementCode));
         }
 
         public override SyntaxNode VisitExpressionStatement(ExpressionStatementSyntax node)

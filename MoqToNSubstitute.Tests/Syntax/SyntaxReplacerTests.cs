@@ -3,6 +3,7 @@ using MoqToNSubstitute.Models;
 using MoqToNSubstitute.Syntax;
 using MoqToNSubstitute.Tests.Helpers;
 using System.Reflection;
+using MoqToNSubstitute.Templates;
 
 namespace MoqToNSubstitute.Tests.Syntax
 {
@@ -17,38 +18,8 @@ namespace MoqToNSubstitute.Tests.Syntax
         public static void Initialize(TestContext context)
         {
             _ = context;
-            _substitutions = new CodeSyntax
-            {
-                Identifier = new Expression("Mock", "Substitute.For", false),
-                Argument = new List<Expression>
-                {
-                    new(".Object", "", false),
-                    new("It.IsAny", "Arg.Any", false),
-                    new("It.Is", "Arg.Is", false)
-                },
-                VariableType = new List<Expression>
-                {
-                    new("Mock\\<(?<start>.+)\\>", "${start}", true)
-                },
-                AssignmentExpression = new Expression("new Mock", "Substitute.For", false),
-                ExpressionStatement = new List<Expression>
-                {
-                    new("\r\n *", "", true),
-                    new("It.IsAny", "Arg.Any", false),
-                    new("It.Is", "Arg.Is", false),
-                    new(".Verifiable()", "", false),
-                    new(".Result", "", false),
-                    new("(?<start>.+)\\.Setup\\(.+ => [^.]+\\.(?<middle>.+)\\)\\.ReturnsAsync(?<end>.+);", "${start}.${middle}.Returns${end}", true),
-                    new("(?<start>.+)\\.Setup\\(.+ => [^.]+\\.(?<middle>.+)\\)\\.Returns(?<end>.+);", "${start}.${middle}.Returns${end}", true),
-                    new("(?<start>.+)\\.Setup\\(.+ => [^.]+\\.(?<middle>.+)\\)\\.ThrowsAsync(?<end>.+);", "${start}.${middle}.Throws${end}", true),
-                    new("(?<start>.+)\\.Setup\\(.+ => [^.]+\\.(?<middle>.+)\\)\\.Throws(?<end>.+);", "${start}.${middle}.Throws${end}", true),
-                    new("(?<start>.+)\\.Setup\\(.+ => [^.]+\\.(?<middle>.+)\\)(?<end>.+);", "${start}.${middle}.Throws${end}", true),
-                    new("(?<start>.+)\\.Verify\\(.+ => [^.]+\\.(?<middle>.+)\\, Times.Once\\);", "${start}.Received(1).${middle}", true),
-                    new("(?<start>.+)\\.Verify\\(.+ => [^.]+\\.(?<middle>.+)\\, Times.Never\\);", "${start}.DidNotReceive().${middle}", true),
-                    new("(?<start>.+)\\.Verify\\(.+ => [^.]+\\.(?<middle>.+)\\, Times.Exactly(?<times>.+)\\);", "${start}.Received${times}.${middle}", true),
-                    new("(?<start>.+)\\.Verify\\(.+ => [^.]+\\.(?<middle>.+);", "${start}.Received().${middle}", true),
-                }
-            }; _assembly = Assembly.GetExecutingAssembly();
+            _substitutions = ReplacementTemplate.ReturnReplacementSyntax();
+            _assembly = Assembly.GetExecutingAssembly();
             var resourceName = _assembly.GetManifestResourceNames().Single(n => n.EndsWith("TaxServiceTests.cs"));
             _fileContents = FileIO.ReadFileFromEmbeddedResources(resourceName);
             Assert.IsFalse(string.IsNullOrEmpty(_fileContents));

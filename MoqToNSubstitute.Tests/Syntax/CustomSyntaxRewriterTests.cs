@@ -6,6 +6,7 @@ using MoqToNSubstitute.Models;
 using MoqToNSubstitute.Syntax;
 using MoqToNSubstitute.Tests.Helpers;
 using System.Reflection;
+using MoqToNSubstitute.Templates;
 
 namespace MoqToNSubstitute.Tests.Syntax
 {
@@ -21,38 +22,7 @@ namespace MoqToNSubstitute.Tests.Syntax
         public static void ClassInitialize(TestContext context)
         {
             _ = context;
-            _substitutions = new CodeSyntax
-            {
-                Identifier = new Expression("Mock", "Substitute.For", false),
-                Argument = new List<Expression>
-                {
-                    new(".Object", "", false),
-                    new("It.IsAny", "Arg.Any", false),
-                    new("It.Is", "Arg.Is", false)
-                },
-                VariableType = new List<Expression>
-                {
-                    new("Mock\\<(?<start>.+)\\>", "${start}", true)
-                },
-                AssignmentExpression = new Expression("new Mock", "Substitute.For", false),
-                ExpressionStatement = new List<Expression>
-                {
-                    new("\r\n *", "", true),
-                    new("It.IsAny", "Arg.Any", false),
-                    new("It.Is", "Arg.Is", false),
-                    new(".Verifiable()", "", false),
-                    new(".Result", "", false),
-                    new("(?<start>.+)\\.Setup\\(.+ => [^.]+\\.(?<middle>.+)\\)\\.ReturnsAsync(?<end>.+);", "${start}.${middle}.Returns${end}", true),
-                    new("(?<start>.+)\\.Setup\\(.+ => [^.]+\\.(?<middle>.+)\\)\\.Returns(?<end>.+);", "${start}.${middle}.Returns${end}", true),
-                    new("(?<start>.+)\\.Setup\\(.+ => [^.]+\\.(?<middle>.+)\\)\\.ThrowsAsync(?<end>.+);", "${start}.${middle}.Throws${end}", true),
-                    new("(?<start>.+)\\.Setup\\(.+ => [^.]+\\.(?<middle>.+)\\)\\.Throws(?<end>.+);", "${start}.${middle}.Throws${end}", true),
-                    new("(?<start>.+)\\.Setup\\(.+ => [^.]+\\.(?<middle>.+)\\)(?<end>.+);", "${start}.${middle}.Throws${end}", true),
-                    new("(?<start>.+)\\.Verify\\(.+ => [^.]+\\.(?<middle>.+)\\, Times.Once\\);", "${start}.Received(1).${middle}", true),
-                    new("(?<start>.+)\\.Verify\\(.+ => [^.]+\\.(?<middle>.+)\\, Times.Never\\);", "${start}.DidNotReceive().${middle}", true),
-                    new("(?<start>.+)\\.Verify\\(.+ => [^.]+\\.(?<middle>.+)\\, Times.Exactly(?<times>.+)\\);", "${start}.Received${times}.${middle}", true),
-                    new("(?<start>.+)\\.Verify\\(.+ => [^.]+\\.(?<middle>.+);", "${start}.Received().${middle}", true),
-                }
-            };
+            _substitutions = ReplacementTemplate.ReturnReplacementSyntax();
             _customSyntaxRewriter = new CustomSyntaxRewriter(_substitutions);
             _assembly = Assembly.GetExecutingAssembly();
             var resourceName = _assembly.GetManifestResourceNames().Single(n => n.EndsWith("TaxServiceTests.cs"));
@@ -67,7 +37,7 @@ namespace MoqToNSubstitute.Tests.Syntax
             Assert.IsNotNull(_root);
             Assert.IsNotNull(_substitutions);
             Assert.IsNotNull(_customSyntaxRewriter);
-            var testNode = _root.GetNodes<ObjectCreationExpressionSyntax>(_substitutions.Identifier.Original).FirstOrDefault();
+            var testNode = _root.GetNodes<ObjectCreationExpressionSyntax>("Mock").FirstOrDefault();
             Assert.IsNotNull(testNode);
             Assert.AreEqual("new Mock<ICalculatorService>()", testNode.ToString());
             var replacementNode = _customSyntaxRewriter.VisitObjectCreationExpression(testNode);
@@ -97,7 +67,7 @@ namespace MoqToNSubstitute.Tests.Syntax
             const string node = "Mock<ITestClass> testClass = new();";
             var tree = CSharpSyntaxTree.ParseText(node);
             var root = tree.GetRoot();
-            var testNode = root.GetNodes<VariableDeclarationSyntax>(_substitutions.Identifier.Original).FirstOrDefault();
+            var testNode = root.GetNodes<VariableDeclarationSyntax>("Mock").FirstOrDefault();
             Assert.IsNotNull(testNode);
             Assert.AreEqual("Mock<ITestClass> testClass = new()", testNode.ToString());
             var replacementNode = _customSyntaxRewriter.VisitVariableDeclaration(testNode);
@@ -113,7 +83,7 @@ namespace MoqToNSubstitute.Tests.Syntax
             const string node = "_testClass = new Mock<ITextClass>(_mockClass.Object, _realClass);";
             var tree = CSharpSyntaxTree.ParseText(node);
             var root = tree.GetRoot();
-            var testNode = root.GetNodes<AssignmentExpressionSyntax>(_substitutions.Identifier.Original).FirstOrDefault();
+            var testNode = root.GetNodes<AssignmentExpressionSyntax>("Mock").FirstOrDefault();
             Assert.IsNotNull(testNode);
             Assert.AreEqual("_testClass = new Mock<ITextClass>(_mockClass.Object, _realClass)", testNode.ToString());
             var replacementNode = _customSyntaxRewriter.VisitAssignmentExpression(testNode);

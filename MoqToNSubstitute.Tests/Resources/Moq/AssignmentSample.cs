@@ -8,6 +8,7 @@
         {
             _testClass = new Mock<ITestClass>();
             _testClass = new Mock<ITestClass>(_mockClass.Object, _realClass);
+            _testClass = new Mock<ITestClass>(_mockClass.Object, _realClass) { CallBase = true };
         }
     }
 }
