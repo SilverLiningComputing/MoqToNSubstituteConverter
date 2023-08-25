@@ -18,7 +18,7 @@ It.Is = Arg.Is
 .Throws, .ThrowsAsync = .Throws
 
 Times.Once = .Received(1)
-Times.EExactly(3) = .Received(3)
+Times.Exactly(3) = .Received(3)
 Times.Never = .DidNotReceive()
 ```
 
@@ -29,4 +29,3 @@ Times.Never = .DidNotReceive()
 * `{ callbase = true; }` should be removed
 * There is no replacment for `.VerifyAll` or `.Protected`
 * Some of the replaced statements no longer have the correct indentation, they are left justified, this could be fixed in Visual Studio by reformatting the document
-* The verify replacement has 2 semi-colons at the end
