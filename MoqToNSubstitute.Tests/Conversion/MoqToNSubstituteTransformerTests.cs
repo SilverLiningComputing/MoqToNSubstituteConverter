@@ -2,7 +2,7 @@
 using MoqToNSubstitute.Tests.Helpers;
 using System.Reflection;
 
-namespace MoqToNSubstitute.Tests.Extensions
+namespace MoqToNSubstitute.Tests.Conversion
 {
     [TestClass]
     public class MoqToNSubstituteTransformerTests

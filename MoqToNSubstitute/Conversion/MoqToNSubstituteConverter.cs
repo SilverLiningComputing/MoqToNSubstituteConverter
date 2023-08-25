@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using MoqToNSubstitute.Utilities;
+﻿using MoqToNSubstitute.Utilities;
 
 namespace MoqToNSubstitute.Conversion;
 

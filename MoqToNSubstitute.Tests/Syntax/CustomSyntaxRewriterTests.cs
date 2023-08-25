@@ -1,11 +1,11 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using MoqToNSubstitute.Extensions;
 using MoqToNSubstitute.Models;
+using MoqToNSubstitute.Syntax;
 using MoqToNSubstitute.Tests.Helpers;
 using System.Reflection;
-using MoqToNSubstitute.Extensions;
-using MoqToNSubstitute.Syntax;
 
 namespace MoqToNSubstitute.Tests.Syntax
 {
