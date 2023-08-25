@@ -7,6 +7,7 @@
         public void Test_Assignments()
         {
             _testClass = new Mock<ITestClass>();
+            _testClass = new Mock<ITestClass>(_mockClass.Object, _realClass);
         }
     }
 }

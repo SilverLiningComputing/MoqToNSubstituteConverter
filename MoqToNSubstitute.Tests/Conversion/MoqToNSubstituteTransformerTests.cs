@@ -1,7 +1,8 @@
-﻿using MoqToNSubstitute.Tests.Helpers;
+﻿using MoqToNSubstitute.Conversion;
+using MoqToNSubstitute.Tests.Helpers;
 using System.Reflection;
 
-namespace MoqToNSubstitute.Tests
+namespace MoqToNSubstitute.Tests.Conversion
 {
     [TestClass]
     public class MoqToNSubstituteTransformerTests
@@ -20,6 +21,7 @@ namespace MoqToNSubstitute.Tests
         [TestMethod]
         public void Test_GetNodes()
         {
+            Assert.IsNotNull(_fileContents);
             MoqToNSubstituteTransformer.GetNodeTypesFromString(_fileContents);
         }
 

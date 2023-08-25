@@ -14,6 +14,7 @@
 ITestClass testClass = new();
 ITestClass testClass = Substitute.For<ITestClass>();
 var testClass = Substitute.For<ITestClass>();
+var testClass = Substitute.For<ITestClass>(_mockClass, _realClass);
         }
     }
 }

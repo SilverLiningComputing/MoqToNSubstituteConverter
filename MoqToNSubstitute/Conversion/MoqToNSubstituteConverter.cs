@@ -1,9 +1,6 @@
-﻿using System.Runtime.CompilerServices;
-using MoqToNSubstitute.Utilities;
+﻿using MoqToNSubstitute.Utilities;
 
-[assembly: InternalsVisibleTo("MoqToNSubstitute.Tests")]
-
-namespace MoqToNSubstitute;
+namespace MoqToNSubstitute.Conversion;
 
 internal static class MoqToNSubstituteConverter
 {
