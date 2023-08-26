@@ -8,6 +8,8 @@
         {
             _testClass = Substitute.For<ITestClass>();
             _testClass = Substitute.For<ITestClass>(_mockClass.Object, _realClass);
+            _testClass = Substitute.ForPartsOf<ITestClass>(_mockClass.Object, _realClass) ;
+            _testClass = Substitute.ForPartsOf<ITestClass>() ;
         }
     }
 }

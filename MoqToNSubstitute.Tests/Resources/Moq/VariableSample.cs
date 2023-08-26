@@ -13,8 +13,11 @@
         {
             Mock<ITestClass> testClass = new();
             Mock<ITestClass> testClass = new Mock<ITestClass>();
+            Mock<ITestClass> testClass = new Mock<ITestClass>(_mockClass.Object, _realClass);
+            Mock<ITestClass> testClass = new Mock<ITestClass>(_mockClass.Object, _realClass) { CallBase = true };
             var testClass = new Mock<ITestClass>();
             var testClass = new Mock<ITestClass>(_mockClass.Object, _realClass);
+            var testClass = new Mock<ITestClass>(_mockClass.Object, _realClass) { CallBase = true };
         }
     }
 }
