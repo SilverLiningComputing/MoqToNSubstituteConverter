@@ -58,5 +58,5 @@ switch (args.Length)
 
 public static partial class Program
 {
-    internal static MoqToNSubstituteConverter MoqToNSubstituteConverter { get; set; } = new();
+    internal static ICodeConverter MoqToNSubstituteConverter { get; set; } = new MoqToNSubstituteConverter();
 }

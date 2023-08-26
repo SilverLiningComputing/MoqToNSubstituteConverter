@@ -14,7 +14,7 @@ namespace MoqToNSubstitute.Tests
         [DataRow("false", "false", null, false)]
         [DataRow("true", "false", null, true)]
         [DataRow("false", "true", null, false)]
-        [DataRow("true", "", null, false)]
+        [DataRow("true", "", null, true)]
         [DataRow("", "true", null, true)]
         [DataRow("", "", null, null)]
         [DataRow("c:\\folder\\code\\", "c:\\folder\\code\\", "c:\\folder\\code\\", null)]
@@ -22,8 +22,8 @@ namespace MoqToNSubstitute.Tests
         {
             var args = new[] { arg1, arg2 };
             var entryPoint = typeof(Program).Assembly.EntryPoint!;
-            Program.MoqToNSubstituteConverter = Substitute.For<MoqToNSubstituteConverter>();
-            //Program.MoqToNSubstituteConverter.Convert(Arg.Any<string>(), Arg.Any<bool>());
+            Program.MoqToNSubstituteConverter = Substitute.For<ICodeConverter>();
+            Program.MoqToNSubstituteConverter.Convert(Arg.Any<string>(), Arg.Any<bool>());
             entryPoint.Invoke(null, new object[] { args });
              
             if (param1 != null && param2 != null)
