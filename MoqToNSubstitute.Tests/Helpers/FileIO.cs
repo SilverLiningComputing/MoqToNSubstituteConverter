@@ -1,16 +1,15 @@
 ﻿using System.Reflection;
 
-namespace MoqToNSubstitute.Tests.Helpers
+namespace MoqToNSubstitute.Tests.Helpers;
+
+internal static class FileIO
 {
-    internal static class FileIO
+    public static string ReadFileFromEmbeddedResources(string resourceName)
     {
-        public static string ReadFileFromEmbeddedResources(string resourceName)
-        {
-            var assembly = Assembly.GetExecutingAssembly();
-            using var stream = assembly.GetManifestResourceStream(resourceName);
-            if (stream == null) return "";
-            using var reader = new StreamReader(stream);
-            return reader.ReadToEnd();
-        }
+        var assembly = Assembly.GetExecutingAssembly();
+        using var stream = assembly.GetManifestResourceStream(resourceName);
+        if (stream == null) return "";
+        using var reader = new StreamReader(stream);
+        return reader.ReadToEnd();
     }
 }

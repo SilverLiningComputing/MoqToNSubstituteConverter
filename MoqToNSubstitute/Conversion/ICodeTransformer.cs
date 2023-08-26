@@ -1,7 +1,6 @@
-﻿namespace MoqToNSubstitute.Conversion
+﻿namespace MoqToNSubstitute.Conversion;
+
+internal interface ICodeTransformer
 {
-    internal interface ICodeTransformer
-    {
-        void Transform(string sourceFilePath, bool transform = false);
-    }
+    void Transform(string sourceFilePath, bool transform = false);
 }

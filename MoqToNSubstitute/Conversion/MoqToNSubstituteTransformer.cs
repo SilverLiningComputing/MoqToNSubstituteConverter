@@ -1,6 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using MoqToNSubstitute.Syntax;
+using MoqToNSubstitute.Extensions;
 using MoqToNSubstitute.Templates;
 using MoqToNSubstitute.Utilities;
 using System.Runtime.CompilerServices;
