@@ -35,7 +35,7 @@ namespace MoqToNSubstitute.Tests.Syntax
             Assert.IsFalse(string.IsNullOrEmpty(_fileContents));
             var tree = CSharpSyntaxTree.ParseText(_fileContents);
             var root = tree.GetRoot();
-            var rootFields = root.ReplaceVariableNodes(_substitutions, "Mock<");
+            var rootFields = root.ReplaceVariableNodes(_substitutions, "Mock");
             var rootObject = rootFields.ReplaceObjectCreationNodes(_substitutions, "Mock");
             var rootReplaced = rootObject.ReplaceArgumentNodes(_substitutions, ".Object");
             resourceName = _assembly.GetManifestResourceNames().Single(n => n.EndsWith("VariableSampleReplaced.cs"));

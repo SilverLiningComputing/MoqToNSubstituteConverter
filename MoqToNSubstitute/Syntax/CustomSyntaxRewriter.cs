@@ -18,12 +18,19 @@ namespace MoqToNSubstitute.Syntax
         public override SyntaxNode? VisitObjectCreationExpression(ObjectCreationExpressionSyntax node)
         {
             var originalType = node.Type.ToString();
+            var initializer = node.Initializer?.ToString();
             var replacementCode = originalType;
             foreach (var identifier in _substitutions.Identifier)
             {
+                // RegEx is not feasible for this syntax so use IsRegEx here to check the initializer
                 if (identifier.IsRegex)
                 {
-                    replacementCode = Regex.Replace(replacementCode, identifier.Original, identifier.Replacement);
+                    // if the initializer has a value then do a replace
+                    if (!string.IsNullOrEmpty(initializer))
+                    {
+                        replacementCode = replacementCode.Replace(identifier.Original,
+                            identifier.Replacement);
+                    }
                 }
                 else
                 {
