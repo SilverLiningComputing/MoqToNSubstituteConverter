@@ -7,13 +7,18 @@ internal static class MoqToNSubstituteConverter
     private static readonly IPackageManager PackageManager = new DotNetPackageManager();
     private static readonly ICodeTransformer CodeTransformer = new MoqToNSubstituteTransformer();
 
-    public static void Convert(bool analysisOnly = true)
+    public static void Convert(string path = "", bool analysisOnly = true)
     {
-        var solutionDir = Directory.GetCurrentDirectory();
+        var solutionDir = string.IsNullOrEmpty(path) 
+            ? Directory.GetCurrentDirectory() 
+            : Path.GetFullPath(path);
+        if (!Directory.Exists(solutionDir))
+        {
+            Logger.Log("The directory does not exist");
+            return;
+        }
         var csFiles = Directory.GetFiles(solutionDir, "*.cs", SearchOption.AllDirectories);
         var csprojFiles = Directory.GetFiles(solutionDir, "*.csproj", SearchOption.AllDirectories);
-
-        Logger.Log("Starting process...");
 
         if (!analysisOnly)
         {
@@ -21,9 +26,6 @@ internal static class MoqToNSubstituteConverter
 
             foreach (var projectFile in csprojFiles)
             {
-                Logger.Log($"Uninstalling Moq from {projectFile}");
-                PackageManager.Uninstall(projectFile, "Moq");
-
                 Logger.Log($"Installing NSubstitute to {projectFile}");
                 PackageManager.Install(projectFile, "NSubstitute");
             }
