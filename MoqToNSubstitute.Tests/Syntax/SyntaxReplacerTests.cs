@@ -1,9 +1,9 @@
 ﻿using Microsoft.CodeAnalysis.CSharp;
 using MoqToNSubstitute.Models;
 using MoqToNSubstitute.Syntax;
+using MoqToNSubstitute.Templates;
 using MoqToNSubstitute.Tests.Helpers;
 using System.Reflection;
-using MoqToNSubstitute.Templates;
 
 namespace MoqToNSubstitute.Tests.Syntax
 {

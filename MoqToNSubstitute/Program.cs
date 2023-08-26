@@ -3,6 +3,7 @@ using MoqToNSubstitute.Utilities;
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("MoqToNSubstitute.Tests")]
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 
 Logger.Log("Starting process...");
 
@@ -14,14 +15,14 @@ switch (args.Length)
         break;
     case 1:
         var onlyArg = args[0];
-        if (bool.TryParse(onlyArg, out var analysisOnly))
+        if (bool.TryParse(onlyArg, out var transform))
         {
-            Logger.Log(analysisOnly ? "Running analysis on current directory" : "Running transformation on current directory");
-            MoqToNSubstituteConverter.Convert("", analysisOnly);
+            Logger.Log(transform ? "Running transformation on current directory" : "Running analysis on current directory");
+            MoqToNSubstituteConverter.Convert("", transform);
         }
         else
         {
-            Logger.Log($"Running analysis on onlyArg");
+            Logger.Log($"Running analysis on: {onlyArg}");
             MoqToNSubstituteConverter.Convert(onlyArg);
         }
         break;
@@ -31,14 +32,14 @@ switch (args.Length)
         // Both values were boolean
         if (bool.TryParse(first, out var firstBool) && bool.TryParse(second, out _))
         {
-            Logger.Log(firstBool ? "Running analysis on current directory" : "Running transformation on current directory");
+            Logger.Log(firstBool ? "Running transformation on current directory" : "Running analysis on current directory");
             // Use the first boolean value
             MoqToNSubstituteConverter.Convert("", firstBool);
         }
         // First value is not boolean but the second one is
         else if (!bool.TryParse(first, out _) && bool.TryParse(second, out var secondBool))
         {
-            Logger.Log($"Running analysis on: {first}");
+            Logger.Log(secondBool ? $"Running transformation on: {first}" : $"Running analysis on: {first}");
             MoqToNSubstituteConverter.Convert(first, secondBool);
         }
         // Neither value is a boolean
@@ -49,8 +50,13 @@ switch (args.Length)
         }
         else
         {
-            Logger.Log(firstBool ? $"Running analysis on: {second}" : $"Running transformation on: {second}");
+            Logger.Log(firstBool ? $"Running transformation on: {second}" : $"Running analysis on: {second}");
             MoqToNSubstituteConverter.Convert(second, firstBool);
         }
         break;
+}
+
+public static partial class Program
+{
+    internal static MoqToNSubstituteConverter MoqToNSubstituteConverter { get; set; } = new();
 }

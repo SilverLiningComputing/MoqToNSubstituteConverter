@@ -42,7 +42,7 @@ To perform analysis on a specific directory:
 ```
 To perform transformation on a specific directory:
 ```
-.\MoqToNSubstitute.exe C:\Users\user\Documents\Projects\Vts.Api\Vts.Api.Tests\ false
+.\MoqToNSubstitute.exe C:\Users\user\Documents\Projects\Vts.Api\Vts.Api.Tests\ true
 ```
 
 ## How to Debug the code (Visual Studio)

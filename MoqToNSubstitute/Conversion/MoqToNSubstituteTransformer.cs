@@ -1,11 +1,9 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.Formatting;
-using MoqToNSubstitute.Models;
 using MoqToNSubstitute.Syntax;
+using MoqToNSubstitute.Templates;
 using MoqToNSubstitute.Utilities;
 using System.Runtime.CompilerServices;
-using MoqToNSubstitute.Templates;
 
 [assembly: InternalsVisibleTo("MoqToNSubstitute.Tests")]
 
@@ -13,7 +11,7 @@ namespace MoqToNSubstitute.Conversion;
 
 internal class MoqToNSubstituteTransformer : ICodeTransformer
 {
-    public void Transform(string sourceFilePath, bool analysisOnly = true)
+    public void Transform(string sourceFilePath, bool transform = false)
     {
         var substitutions = ReplacementTemplate.ReturnReplacementSyntax();
         var sourceText = File.ReadAllText(sourceFilePath);
@@ -30,8 +28,8 @@ internal class MoqToNSubstituteTransformer : ICodeTransformer
         var rootExpression = rootFields.ReplaceExpressionNodes(substitutions, ".Setup(", ".Verify(");
 
         Logger.Log($"Modified File: \r\n{rootExpression}\r\n");
-        if (root.ToFullString() == rootExpression.ToFullString() || analysisOnly) return;
-        var modifiedCode = Formatter.Format(rootExpression, new AdhocWorkspace()).ToFullString();
+        var modifiedCode = rootExpression.NormalizeWhitespace().ToFullString();
+        if (root.ToFullString() == rootExpression.ToFullString() || !transform) return;
         File.WriteAllText(sourceFilePath, modifiedCode);
     }
 

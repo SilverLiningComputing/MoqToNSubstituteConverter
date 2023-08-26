@@ -10,7 +10,7 @@ namespace MoqToNSubstitute.Templates
             {
                 Identifier = new List<Expression>
                 {
-                    new("Mock", "Substitute.ForPartsOf", true),        
+                    new("Mock", "Substitute.ForPartsOf", true),
                     new("Mock", "Substitute.For", false),
                 },
                 Argument = new List<Expression>
