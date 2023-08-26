@@ -1,10 +1,5 @@
 ﻿using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using MoqToNSubstitute.Extensions;
-using MoqToNSubstitute.Models;
-using MoqToNSubstitute.Templates;
-using MoqToNSubstitute.Tests.Helpers;
-using System.Reflection;
 
 namespace MoqToNSubstitute.Tests.Extensions;
 

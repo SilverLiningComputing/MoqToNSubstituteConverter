@@ -1,19 +1,13 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using MoqToNSubstitute.Extensions;
-using MoqToNSubstitute.Models;
 using MoqToNSubstitute.Syntax;
-using MoqToNSubstitute.Templates;
-using MoqToNSubstitute.Tests.Helpers;
-using System.Reflection;
 
 namespace MoqToNSubstitute.Tests.Syntax;
 
 [TestClass]
 public class CustomSyntaxRewriterTests
 {
-    private static CodeSyntax? _substitutions;
     private static CustomSyntaxRewriter? _customSyntaxRewriter;
     private static SyntaxNode? _root;
     private static Assembly? _assembly;
@@ -22,7 +16,7 @@ public class CustomSyntaxRewriterTests
     public static void ClassInitialize(TestContext context)
     {
         _ = context;
-        _substitutions = ReplacementTemplate.ReturnReplacementSyntax();
+        var _substitutions = ReplacementTemplate.ReturnReplacementSyntax();
         _customSyntaxRewriter = new CustomSyntaxRewriter(_substitutions);
         _assembly = Assembly.GetExecutingAssembly();
         var resourceName = _assembly.GetManifestResourceNames().Single(n => n.EndsWith("TaxServiceTests.cs"));
@@ -84,8 +78,8 @@ public class CustomSyntaxRewriterTests
                     new("Mock<", "", false)
                 }
             };
-            _customSyntaxRewriter = new CustomSyntaxRewriter(substitutions);
-            var replacementNode = _customSyntaxRewriter.VisitVariableDeclaration(testNode);
+            var customSyntaxRewriter = new CustomSyntaxRewriter(substitutions);
+            var replacementNode = customSyntaxRewriter.VisitVariableDeclaration(testNode);
             Assert.IsNotNull(replacementNode);
             Assert.AreEqual("ITestClass> testClass = new Mock<ITestClass>()", replacementNode.ToString());
         }

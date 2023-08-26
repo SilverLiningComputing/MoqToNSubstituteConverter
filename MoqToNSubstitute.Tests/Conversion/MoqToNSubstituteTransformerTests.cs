@@ -1,6 +1,4 @@
-﻿using MoqToNSubstitute.Conversion;
-using MoqToNSubstitute.Tests.Helpers;
-using System.Reflection;
+﻿using Microsoft.CodeAnalysis.CSharp;
 
 namespace MoqToNSubstitute.Tests.Conversion;
 
@@ -8,12 +6,16 @@ namespace MoqToNSubstitute.Tests.Conversion;
 public class MoqToNSubstituteTransformerTests
 {
     private string? _fileContents;
+    private Assembly? _assembly;
+    private CodeSyntax? _substitutions;
 
     [TestInitialize]
     public void TestInitialize()
     {
-        var assembly = Assembly.GetExecutingAssembly();
-        var resourceName = assembly.GetManifestResourceNames().Single(n => n.EndsWith("VariableSample.cs"));
+        _assembly = Assembly.GetExecutingAssembly();
+        _substitutions = ReplacementTemplate.ReturnReplacementSyntax();
+
+        var resourceName = _assembly.GetManifestResourceNames().Single(n => n.EndsWith("VariableSample.cs"));
         Assert.IsFalse(string.IsNullOrEmpty(resourceName));
         _fileContents = FileIO.ReadFileFromEmbeddedResources(resourceName);
     }
@@ -26,9 +28,19 @@ public class MoqToNSubstituteTransformerTests
     }
 
     [TestMethod]
-    public void Test_GetAssignmentNodes()
+    public void Test_ReplaceArgumentNodes()
     {
-        Assert.IsNotNull(_fileContents);
-        MoqToNSubstituteTransformer.GetNodeTypesFromString(_fileContents);
+        Assert.IsNotNull(_assembly);
+        Assert.IsNotNull(_substitutions);
+        var resourceName = _assembly.GetManifestResourceNames().Single(n => n.EndsWith("ArgumentSample.cs"));
+        var fileContents = FileIO.ReadFileFromEmbeddedResources(resourceName);
+        var tree = CSharpSyntaxTree.ParseText(fileContents);
+        var root = tree.GetRoot();
+        var testNode = root.ReplaceArgumentNodes(_substitutions, ".Object", "It.IsAny", "It.Is");
+        Assert.IsNotNull(testNode);
+        resourceName = _assembly.GetManifestResourceNames().Single(n => n.EndsWith("ArgumentSampleReplaced.cs"));
+        fileContents = FileIO.ReadFileFromEmbeddedResources(resourceName);
+        Assert.IsNotNull(fileContents);
+        Assert.AreEqual(fileContents, testNode.ToString());
     }
 }

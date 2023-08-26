@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-
-namespace MoqToNSubstitute.Tests.Helpers;
+﻿namespace MoqToNSubstitute.Tests.Helpers;
 
 internal static class FileIO
 {

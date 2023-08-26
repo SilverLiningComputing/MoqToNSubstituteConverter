@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-
-namespace MoqToNSubstitute.Tests.Helpers;
+﻿namespace MoqToNSubstitute.Tests.Helpers;
 
 [TestClass]
 public class FileIOTests

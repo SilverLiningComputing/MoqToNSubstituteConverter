@@ -21,10 +21,10 @@ internal class MoqToNSubstituteTransformer : ICodeTransformer
         var tree = CSharpSyntaxTree.ParseText(sourceText);
         var root = tree.GetRoot();
 
-        var rootAssignment = root.ReplaceAssignmentNodes(substitutions, "Mock");
+        var rootObject = root.ReplaceArgumentNodes(substitutions, ".Object", "It.IsAny", "It.Is");
+        var rootAssignment = rootObject.ReplaceAssignmentNodes(substitutions, "Mock");
         var rootNewObject = rootAssignment.ReplaceObjectCreationNodes(substitutions, "new Mock");
-        var rootObject = rootNewObject.ReplaceArgumentNodes(substitutions, ".Object", "It.IsAny", "It.Is");
-        var rootFields = rootObject.ReplaceVariableNodes(substitutions, "Mock<");
+        var rootFields = rootNewObject.ReplaceVariableNodes(substitutions, "Mock<");
         var rootExpression = rootFields.ReplaceExpressionNodes(substitutions, ".Setup(", ".Verify(");
 
         Logger.Log($"Modified File: \r\n{rootExpression}\r\n");
@@ -33,7 +33,7 @@ internal class MoqToNSubstituteTransformer : ICodeTransformer
         File.WriteAllText(sourceFilePath, modifiedCode);
     }
 
-    public void GetNodeTypesFromFile(string sourceFilePath)
+    internal static void GetNodeTypesFromFile(string sourceFilePath)
     {
         var sourceText = File.ReadAllText(sourceFilePath);
         if (!sourceText.Contains("Mock")) return;

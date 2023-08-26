@@ -56,6 +56,10 @@ switch (args.Length)
         break;
 }
 
+/// <summary>
+/// A partial class for Program so we could define am ICodeConverter parameter
+/// This was to facilitate unit testing
+/// </summary>
 public static partial class Program
 {
     internal static ICodeConverter MoqToNSubstituteConverter { get; set; } = new MoqToNSubstituteConverter();

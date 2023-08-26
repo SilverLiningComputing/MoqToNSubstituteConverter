@@ -4,8 +4,8 @@ namespace MoqToNSubstitute.Conversion;
 
 internal class MoqToNSubstituteConverter : ICodeConverter
 {
-    private readonly IPackageManager _packageManager = new DotNetPackageManager();
-    private readonly ICodeTransformer _codeTransformer = new MoqToNSubstituteTransformer();
+    internal IPackageManager PackageManager = new DotNetPackageManager();
+    internal ICodeTransformer CodeTransformer = new MoqToNSubstituteTransformer();
 
     public void Convert(string path = "", bool transform = false)
     {
@@ -27,7 +27,7 @@ internal class MoqToNSubstituteConverter : ICodeConverter
             foreach (var projectFile in csprojFiles)
             {
                 Logger.Log($"Installing NSubstitute to {projectFile}");
-                _packageManager.Install(projectFile, "NSubstitute");
+                PackageManager.Install(projectFile, "NSubstitute");
             }
         }
 
@@ -35,7 +35,7 @@ internal class MoqToNSubstituteConverter : ICodeConverter
         foreach (var sourceFile in csFiles)
         {
             Logger.Log(transform ? $"Transforming {sourceFile}" : $"Analyzing {sourceFile}");
-            _codeTransformer.Transform(sourceFile, transform);
+            CodeTransformer.Transform(sourceFile, transform);
         }
         Logger.Log(transform ? "Completed transformations." : "Completed analysis");
     }
