@@ -33,7 +33,7 @@ Times.Never = .DidNotReceive()
 * Once the replacement is complete `using NSubstitute;` will need to be added to each modified file or `global using NSubstitute;` in the Usings.cs file 
 
 ## How to Run the code (PowerShell)
-By default the executable will run in the current directory and sub directories. It will perfom analysis only and logs the results of the analysis in the log file.
+By default the executable will run in the current directory and sub directories, it perfoms analysis only and logs the results of the analysis in the log file.
 ```
 .\MoqToNSubstitute.exe
 ```
