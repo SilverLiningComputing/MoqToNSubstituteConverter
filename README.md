@@ -1,6 +1,8 @@
 # MoqToNSubstituteConverter
 ## A console application to convert Moq in unit tests to NSubstitute
 
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=SilverLiningComputing_MoqToNSubstituteConverter&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=SilverLiningComputing_MoqToNSubstituteConverter)
+
 ### This project only has replacement code for the following:
 ``` csharp
 Mock<ClassToMock> = ClassToMock
