@@ -32,7 +32,8 @@ Times.Never = .DidNotReceive()
 * `It.IsAnyType` does not currently have a replacement
 * Some of the replaced statements no longer have the correct indentation, they are left justified, this could be fixed in Visual Studio by reformatting the document
 * The replacement for `Mock<ClassToMock> = new()` is not technically correct, it will replace it with `ClassToMock = new()` but it should be `ClassToMock = Substitute.For<ClassToMock>()`
-* Once the replacement is complete `using NSubstitute;` will need to be added to each modified file or `global using NSubstitute;` in the Usings.cs file 
+* Once the replacement is complete `using NSubstitute;` will need to be added to each modified file or `global using NSubstitute;` in the Usings.cs file
+* If the method you are setting up to "mock" is asynchronous, you may need to add await to the call
 
 ## How to Run the code (PowerShell)
 By default the executable will run in the current directory and sub directories, it perfoms analysis only and logs the results of the analysis in the log file.
