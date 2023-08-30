@@ -43,7 +43,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"VirtualPhotonics_Vts.MonteCarlo" /o:"virtualphotonics" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.nunit.reportsPaths=TestResults/*.trx
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"SilverLiningComputing_MoqToNSubstituteConverter" /o:"slc" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.nunit.reportsPaths=TestResults/*.trx
           dotnet build MoqToNSubstitute.sln /t:Rebuild /p:Configuration=Release
           dotnet test MoqToNSubstitute.sln -c:Release -l:"trx;LogFileName=TestResult.trx" --results-directory TestResults/
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
