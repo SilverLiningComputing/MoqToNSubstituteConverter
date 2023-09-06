@@ -34,6 +34,7 @@ Times.Never = .DidNotReceive()
 * The replacement for `Mock<ClassToMock> = new()` is not technically correct, it will replace it with `ClassToMock = new()` but it should be `ClassToMock = Substitute.For<ClassToMock>()`
 * Once the replacement is complete `using NSubstitute;` will need to be added to each modified file or `global using NSubstitute;` in the Usings.cs file
 * If the method you are setting up to "mock" is asynchronous, you may need to add await to the call
+* If there are Null Conditional Operators ?. in the code, these get left behind and will need to be removed
 
 ## How to Run the code (PowerShell)
 By default the executable will run in the current directory and sub directories, it perfoms analysis only and logs the results of the analysis in the log file.
