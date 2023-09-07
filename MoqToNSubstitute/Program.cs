@@ -29,6 +29,20 @@ switch (args.Length)
     default:
         var first = args[0];
         var second = args[1];
+        OrganizeArguments(first, second);
+        break;
+}
+
+/// <summary>
+/// A partial class for Program so we could define am ICodeConverter parameter
+/// This was to facilitate unit testing
+/// </summary>
+public static partial class Program
+{
+    internal static ICodeConverter MoqToNSubstituteConverter { get; set; } = new MoqToNSubstituteConverter();
+
+    internal static void OrganizeArguments(string first, string second)
+    {
         // Both values were boolean
         if (bool.TryParse(first, out var firstBool) && bool.TryParse(second, out _))
         {
@@ -53,14 +67,5 @@ switch (args.Length)
             Logger.Log(firstBool ? $"Running transformation on: {second}" : $"Running analysis on: {second}");
             MoqToNSubstituteConverter.Convert(second, firstBool);
         }
-        break;
-}
-
-/// <summary>
-/// A partial class for Program so we could define am ICodeConverter parameter
-/// This was to facilitate unit testing
-/// </summary>
-public static partial class Program
-{
-    internal static ICodeConverter MoqToNSubstituteConverter { get; set; } = new MoqToNSubstituteConverter();
+    }
 }

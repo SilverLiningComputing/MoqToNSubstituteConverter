@@ -31,11 +31,10 @@ internal class DotNetPackageManager : IPackageManager
         {
             StartInfo = new ProcessStartInfo
             {
-                FileName = "cmd.exe",
                 RedirectStandardInput = true,
                 RedirectStandardOutput = true,
                 CreateNoWindow = true,
-                UseShellExecute = false
+                UseShellExecute = true
             }
         };
 
