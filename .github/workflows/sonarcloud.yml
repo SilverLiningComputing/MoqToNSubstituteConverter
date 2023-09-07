@@ -10,6 +10,9 @@ jobs:
     name: Build and analyze
     runs-on: windows-latest
     steps:
+      - name: Build
+        run: |
+          dotnet tool install --global dotnet-coverage
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
@@ -43,7 +46,8 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"SilverLiningComputing_MoqToNSubstituteConverter" /o:"slc" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.nunit.reportsPaths=TestResults/*.trx
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"SilverLiningComputing_MoqToNSubstituteConverter" /o:"slc" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml
           dotnet build MoqToNSubstitute.sln /t:Rebuild /p:Configuration=Release
-          dotnet test MoqToNSubstitute.sln -c:Release -l:"trx;LogFileName=TestResult.trx" --results-directory TestResults/
+          dotnet test MoqToNSubstitute.sln -c:Release
+          dotnet-coverage collect 'dotnet test' -f xml -o 'coverage.xml'
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"

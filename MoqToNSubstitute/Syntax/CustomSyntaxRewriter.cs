@@ -86,7 +86,8 @@ public class CustomSyntaxRewriter : CSharpSyntaxRewriter
         {
             if (variableType.IsRegex)
             {
-                replacementCode = Regex.Replace(replacementCode, variableType.Original, variableType.Replacement);
+                replacementCode = Regex.Replace(replacementCode, variableType.Original, variableType.Replacement, RegexOptions.Compiled | RegexOptions.CultureInvariant |
+                    RegexOptions.ExplicitCapture | RegexOptions.IgnoreCase, TimeSpan.FromSeconds(10));
             }
             else
             {
@@ -111,7 +112,8 @@ public class CustomSyntaxRewriter : CSharpSyntaxRewriter
         {
             if (assignment.IsRegex)
             {
-                replacementCode = Regex.Replace(replacementCode, assignment.Original, assignment.Replacement);
+                replacementCode = Regex.Replace(replacementCode, assignment.Original, assignment.Replacement, RegexOptions.Compiled | RegexOptions.CultureInvariant |
+                    RegexOptions.ExplicitCapture | RegexOptions.IgnoreCase, TimeSpan.FromSeconds(10));
             }
             else
             {
@@ -136,7 +138,8 @@ public class CustomSyntaxRewriter : CSharpSyntaxRewriter
         {
             if (statement.IsRegex)
             {
-                replacementCode = Regex.Replace(replacementCode, statement.Original, statement.Replacement);
+                replacementCode = Regex.Replace(replacementCode, statement.Original, statement.Replacement, RegexOptions.Compiled | RegexOptions.CultureInvariant |
+                    RegexOptions.ExplicitCapture | RegexOptions.IgnoreCase, TimeSpan.FromSeconds(10));
             }
             else
             {
