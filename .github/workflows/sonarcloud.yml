@@ -49,5 +49,5 @@ jobs:
           .\.sonar\scanner\dotnet-sonarscanner begin /k:"SilverLiningComputing_MoqToNSubstituteConverter" /o:"slc" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml
           dotnet build MoqToNSubstitute.sln /t:Rebuild /p:Configuration=Release
           dotnet test MoqToNSubstitute.sln -c:Release
-          dotnet-coverage collect 'dotnet test' MoqToNSubstitute.sln -f xml -o 'coverage.xml'
+          dotnet-coverage collect 'dotnet test' -f xml -o 'coverage.xml'
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
