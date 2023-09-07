@@ -16,8 +16,8 @@ public class CustomSyntaxRewriterTests
     public static void ClassInitialize(TestContext context)
     {
         _ = context;
-        var _substitutions = ReplacementTemplate.ReturnReplacementSyntax();
-        _customSyntaxRewriter = new CustomSyntaxRewriter(_substitutions);
+        var substitutions = ReplacementTemplate.ReturnReplacementSyntax();
+        _customSyntaxRewriter = new CustomSyntaxRewriter(substitutions);
         _assembly = Assembly.GetExecutingAssembly();
         var resourceName = _assembly.GetManifestResourceNames().Single(n => n.EndsWith("TaxServiceTests.cs"));
         var fileContents = FileIO.ReadFileFromEmbeddedResources(resourceName);
