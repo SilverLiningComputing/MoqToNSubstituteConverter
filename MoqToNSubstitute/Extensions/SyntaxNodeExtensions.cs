@@ -6,13 +6,13 @@ using MoqToNSubstitute.Utilities;
 
 namespace MoqToNSubstitute.Extensions;
 
-internal static partial class SyntaxNodeExtensions
+internal static class SyntaxNodeExtensions
 {
     internal static IEnumerable<T> GetNodes<T>(this SyntaxNode root, params string[] matchStrings)
     {
         return root.DescendantNodes().OfType<T>().Where(node =>
         {
-            return !(node == null || !matchStrings.Any(match => node.ToString()!.Contains(match)));
+            return (Array.Exists(matchStrings, match => node != null && node.ToString()!.Contains(match)));
         });
     }
 
