@@ -15,6 +15,7 @@ internal static class ReplacementTemplate
             },
             Argument = new List<Expression>
             {
+                new("?.Object", "", false),
                 new(".Object", "", false),
                 new("It.IsAny", "Arg.Any", false),
                 new("It.Is", "Arg.Is", false)
