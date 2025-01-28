@@ -12,7 +12,7 @@ internal static class SyntaxNodeExtensions
     {
         return root.DescendantNodes().OfType<T>().Where(node =>
         {
-            return (Array.Exists(matchStrings, match => node != null && node.ToString()!.Contains(match)));
+            return (Array.Exists(matchStrings, match => node is not null && node.ToString()!.Contains(match)));
         });
     }
 
